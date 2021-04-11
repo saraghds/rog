@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.buzzfuzz.rog.ROG;
 import com.buzzfuzz.rog.decisions.RNG;
+import com.sun.jdi.Field;
 
 public abstract class InstanceFinder {
 	
@@ -64,7 +65,19 @@ public abstract class InstanceFinder {
 			if (attempt == null) {
 				options.remove(choice);
 			} else {
-				return attempt;
+				Field[] fields = attempt.getClass().getDeclaredFields();
+				int nullFields= 0;
+				for (Field field : fields) {
+					field.setAccessible(true);
+					Object value = field.get(attempt); 
+					if (value == null)
+						nullFields++;
+				}
+
+				if (nullFields == fields.length)
+					continue;
+				else
+					return attempt;
 			}
 		}
 		
