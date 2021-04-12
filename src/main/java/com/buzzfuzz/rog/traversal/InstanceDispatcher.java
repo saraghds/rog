@@ -1,6 +1,7 @@
 package com.buzzfuzz.rog.traversal;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -169,12 +170,32 @@ public class InstanceDispatcher {
 					if (inst == null) {
 						inst = new SubclassFinder(this).findInstance(target);
 						if (inst == null)
-							log("Could not find a way to get an instance of this class.");
+							inst = createInstanceFromFields(target);
+							if (inst == null)
+								log("Could not find a way to get an instance of this class.");
 					}
 				}
 			}
 		}
 		return inst;
+	}
+	
+	public Object createInstanceFromFields(Class<?> target) {
+		Object obj = null;
+		
+		Field[] fields = target.getClass().getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			Object fieldObj = getInstance(field.getGenericType());
+			try {
+				field.set(obj, fieldObj);
+			} catch (Exception e) {
+				log("Could not fill field " + field.getName());
+				e.printStackTrace();
+			}
+		}
+	
+		return obj;
 	}
 	
 	public Object checkPrimatives(Class<?> target) {

@@ -64,26 +64,7 @@ public abstract class InstanceFinder {
 			if (attempt == null) {
 				options.remove(choice);
 			} else {
-				java.lang.reflect.Field[] fields = attempt.getClass().getDeclaredFields();
-				int nullFields= 0;
-				for (java.lang.reflect.Field field : fields) {
-					field.setAccessible(true);
-					Object value = null;
-					try {
-						value = field.get(attempt);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					if (value == null)
-						nullFields++;
-				}
-
-				if (nullFields == fields.length) {
-					options.remove(choice);
-					continue;
-				}
-				else
-					return attempt;
+				return attempt;
 			}
 		}
 		
