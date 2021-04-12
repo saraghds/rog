@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.buzzfuzz.rog.ROG;
 import com.buzzfuzz.rog.decisions.RNG;
-import com.sun.jdi.Field;
 
 public abstract class InstanceFinder {
 	
