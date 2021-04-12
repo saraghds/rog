@@ -185,7 +185,7 @@ public class InstanceDispatcher {
 	}
 
 	public Object createInstanceFromFields(Class<?> target) {
-		Object obj = null;
+		Object obj = new Object();
 
 		Field[] fields = target.getDeclaredFields();
 		for (Field field : fields) {
