@@ -187,7 +187,7 @@ public class InstanceDispatcher {
 	public Object createInstanceFromFields(Class<?> target) {
 		Object obj = null;
 
-		Field[] fields = target.getClass().getDeclaredFields();
+		Field[] fields = target.getDeclaredFields();
 		for (Field field : fields) {
 			field.setAccessible(true);
 			try {
