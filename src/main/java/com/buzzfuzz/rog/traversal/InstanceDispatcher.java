@@ -183,17 +183,14 @@ public class InstanceDispatcher {
 	public Object createInstanceFromFields(Class<?> target) {
 		Object obj = null;
 		
-		Field[] fields = target.getClass().getDeclaredFields();
-		for (Field field : fields) {
-			field.setAccessible(true);
-			Object fieldObj = getInstance(field.getGenericType());
-			try {
+		try {
+			Field[] fields = target.getClass().getDeclaredFields();
+			for (Field field : fields) {
+				field.setAccessible(true);
+				Object fieldObj = getInstance(field.getGenericType());
 				field.set(obj, fieldObj);
-			} catch (Exception e) {
-				log("Could not fill field " + field.getName());
-				e.printStackTrace();
 			}
-		}
+		} catch (Exception e) { }
 	
 		return obj;
 	}
