@@ -78,8 +78,10 @@ public abstract class InstanceFinder {
 						nullFields++;
 				}
 
-				if (nullFields == fields.length)
+				if (nullFields == fields.length) {
+					options.remove(choice);
 					continue;
+				}
 				else
 					return attempt;
 			}
