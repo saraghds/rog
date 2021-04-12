@@ -1,5 +1,6 @@
 package com.buzzfuzz.rog.traversal;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -64,7 +65,26 @@ public abstract class InstanceFinder {
 			if (attempt == null) {
 				options.remove(choice);
 			} else {
-				return attempt;
+				Field[] fields = attempt.getClass().getDeclaredFields();
+				int nullFields= 0;
+				for (Field field : fields) {
+					field.setAccessible(true);
+					Object value = null;
+					try {
+						value = field.get(attempt);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					if (value == null)
+						nullFields++;
+				}
+
+				if (nullFields == fields.length) {
+					options.remove(choice);
+					continue;
+				}
+				else
+					return attempt;
 			}
 		}
 		
