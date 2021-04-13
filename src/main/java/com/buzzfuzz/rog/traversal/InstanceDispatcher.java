@@ -1,7 +1,9 @@
 package com.buzzfuzz.rog.traversal;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
@@ -185,17 +187,30 @@ public class InstanceDispatcher {
 	}
 
 	public Object createInstanceFromFields(Class<?> target) {
-		Object obj = new Object();
+		Constructor[] ctors = target.getDeclaredConstructors();
+		Constructor ctor = null;
+		for (int i = 0; i < ctors.length; i++) {
+			ctor = ctors[i];
+			if (ctor.getGenericParameterTypes().length == 0)
+				break;
+		}
 
-		Field[] fields = target.getDeclaredFields();
-		for (Field field : fields) {
-			field.setAccessible(true);
-			try {
-				Object fieldObj = getInstance(field.getGenericType());
-				field.set(obj, fieldObj);
-			} catch (Exception e) {
-				continue;
+		ctor.setAccessible(true);
+		Object obj = null;
+		try {
+			obj = ctor.newInstance();
+
+			Field[] fields = target.getDeclaredFields();
+			for (Field field : fields) {
+				field.setAccessible(true);
+				try {
+					Object fieldObj = getInstance(field.getGenericType());
+					field.set(obj, fieldObj);
+				} catch (Exception e) {
+					continue;
+				}
 			}
+		} catch (Exception e) {
 		}
 
 		return obj;
